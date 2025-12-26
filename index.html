@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuitNow App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0fdf4;
+            color: #065f46;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .day {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            margin: 5px;
+            border-radius: 50%;
+            background: #10b981;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .day.completed {
+            background: #059669;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #10b981;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #059669;
+        }
+        #quote {
+            font-style: italic;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>QuitNow: 21-Day Tracker</h1>
+    <p>Click each day when you successfully stay smoke-free!</p>
+    
+    <div id="tracker"></div>
+
+    <a class="btn" href="#" onclick="resetTracker()">Reset Progress</a>
+
+    <p id="quote"></p>
+
+    <script>
+        const tracker = document.getElementById('tracker');
+        const quote = document.getElementById('quote');
+        const quotes = [
+            "Every cigarette avoided is a victory!",
+            "Stay strong, your health matters!",
+            "One day at a time, you can do it!",
+            "Your future self will thank you!",
+            "Small steps lead to big changes!"
+        ];
+
+        let progress = JSON.parse(localStorage.getItem('quitnowProgress')) || [];
+
+        function renderTracker() {
+            tracker.innerHTML = '';
+            for (let i = 1; i <= 21; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day' + (progress.includes(i) ? ' completed' : '');
+                dayDiv.textContent = i;
+                dayDiv.onclick = () => toggleDay(i);
+                tracker.appendChild(dayDiv);
+            }
+            quote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+        }
+
+        function toggleDay(day) {
+            if (progress.includes(day)) {
+                progress = progress.filter(d => d !== day);
+            } else {
+                progress.push(day);
+            }
+            localStorage.setItem('quitnowProgress', JSON.stringify(progress));
+            renderTracker();
+        }
+
+        function resetTracker() {
+            if(confirm("Are you sure you want to reset your progress?")) {
+                progress = [];
+                localStorage.removeItem('quitnowProgress');
+                renderTracker();
+            }
+        }
+
+        renderTracker();
+    </script>
+</body>
+</html>
